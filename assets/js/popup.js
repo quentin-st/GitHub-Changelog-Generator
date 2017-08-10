@@ -17,7 +17,11 @@ $(function() {
             commits: [],
             newEntry: newEntryFactory(),
             changelogEntries: [],
-            completeChangelogLink: '#'
+            completeChangelogLink: '#',
+            commitsCount: 0,
+            filesChanged: 0,
+            additions: 0,
+            deletions: 0
         },
         methods: {
             toggleCheckCommit: function(commit) {
@@ -46,7 +50,7 @@ $(function() {
         },
         computed: {
             output: function() {
-                var output = '';
+                var output = '## Changelog\n';
 
                 for (var i=0, l=this.changelogEntries.length; i<l; i++) {
                     const entry = this.changelogEntries[i];
@@ -68,6 +72,8 @@ $(function() {
 
                 output += '\n[Complete changelog](' + this.completeChangelogLink + ')';
 
+                output += '\n\n## Stats\n```diff\n' + this.commitsCount + ' commits\n' + this.filesChanged + ' files changed\n+' + this.additions + ' additions\n-' + this.deletions + ' deletions\n```';
+
                 return output;
             }
         }
@@ -77,6 +83,10 @@ $(function() {
         const github = $(source);
 
         vue.completeChangelogLink = url;
+        vue.commitsCount = github.find('#commits_tab_counter').text().trim();
+        vue.filesChanged = github.find('#files_tab_counter').text().trim();
+        vue.additions = github.find('#diffstat').find('.text-green').text().trim().substr(1);
+        vue.deletions = github.find('#diffstat').find('.text-red').text().trim().substr(1);
 
         github.find('.commit').each(function() {
             const commit = $(this),
