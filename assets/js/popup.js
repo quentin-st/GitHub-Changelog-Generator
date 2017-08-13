@@ -34,8 +34,7 @@ $(function() {
                 }
             },
             addEntry: function() {
-                if (this.newEntry.commits.length === 0
-                    || this.newEntry.text.length === 0) {
+                if (this.newEntry.text.length === 0) {
                     return;
                 }
 
@@ -56,55 +55,69 @@ $(function() {
         },
         computed: {
             output: function() {
-                var output = '## Changelog\n';
+                const rows = [
+                    '**Changelog**'
+                ];
 
-                for (var i=0, l=this.changelogEntries.length; i<l; i++) {
-                    const entry = this.changelogEntries[i];
+                if (this.changelogEntries.length === 0) {
+                    rows.push(
+                        ` - *This changelog is empty. Please take a look at the [complete changelog](${this.completeChangelogLink}).*`
+                    );
+                }
+                else {
+                    for (var i = 0, l = this.changelogEntries.length; i < l; i++) {
+                        const entry = this.changelogEntries[i];
+                        var commitRow = ` - ${entry.text}  `;
 
-                    output += ` - ${entry.text}  `;
+                        if (entry.hashes.length > 0) {
+                            for (var y = 0, m = entry.hashes.length; y < m; y++) {
+                                commitRow += entry.hashes[y];
 
-                    if (entry.hashes.length > 0) {
-                        for (var y=0, m=entry.hashes.length; y<m; y++) {
-                            output += entry.hashes[y];
-
-                            if (y < m-1) {
-                                output += ', ';
+                                if (y < m - 1) {
+                                    commitRow += ', ';
+                                }
                             }
                         }
-                    }
 
-                    output += '\n';
+                        rows.push(commitRow);
+                    }
                 }
 
-                output += [
+                rows.push(
                     '',
                     `[Complete changelog](${this.completeChangelogLink})`,
                     '',
-                    '## Stats',
+                    '**Stats**',
                     '```diff',
                     `${this.commitsCount} commits`,
                     `${this.filesChanged} files changed`,
-                    `${this.additions} additions`,
-                    `${this.deletions} deletions`,
+                    `+${this.additions} additions`,
+                    `-${this.deletions} deletions`,
                     '```',
                     '',
-                    '*Contributors*:',
-                    ''
-                ].join('\n');
+                    '**Contributors**:'
+                );
 
                 for (var z=0, l2=Object.keys(this.contributors).length; z<l2; z++) {
                     const contributorName = Object.keys(this.contributors)[z],
                         commitsCount = this.contributors[contributorName].commitsCount;
-                    output += ` - ${contributorName} - ${commitsCount} commit${commitsCount != 1 ? 's' : ''}\n`;
+
+                    rows.push(` - ${contributorName} - ${commitsCount} commit${commitsCount != 1 ? 's' : ''}`);
                 }
 
-                return output;
+                return rows.join('\n');
             }
         }
     });
 
     const onSourceLoaded = function(source, url) {
         const github = $(source);
+
+        console.log(github);
+        window.github = github;
+        if (github.find('.header-logo-invertocat').length === 0) {
+            $('#app').html('<div class="text-muted huge">You\'re not on GitHub!</div>');
+        }
 
         vue.completeChangelogLink = url;
         vue.commitsCount = github.find('#commits_tab_counter').text().trim();

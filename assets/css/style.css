@@ -17,6 +17,13 @@ html, body {
     margin: auto;
 }
 
+.text-muted.huge {
+    line-height: 200px;
+    text-align: center;
+    font-size: 3em;
+    color: #666;
+}
+
 *:not(textarea) {
     user-select: none;
 }
