@@ -59,9 +59,6 @@ button {
     text-decoration: line-through;
     opacity: 0.3;
 }
-.commit--merge {
-    opacity: 0.3;
-}
 .commit input {
     flex-shrink: 0;
 }

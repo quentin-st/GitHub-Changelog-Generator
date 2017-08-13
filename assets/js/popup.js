@@ -15,6 +15,7 @@ $(function() {
         el: '#app',
         data: {
             commits: [],
+            contributors: {},
             newEntry: newEntryFactory(),
             changelogEntries: [],
             completeChangelogLink: '#',
@@ -33,6 +34,11 @@ $(function() {
                 }
             },
             addEntry: function() {
+                if (this.newEntry.commits.length === 0
+                    || this.newEntry.text.length === 0) {
+                    return;
+                }
+
                 var hashes = [];
 
                 for (var i=0, l=this.newEntry.commits.length; i<l; i++) {
@@ -55,7 +61,7 @@ $(function() {
                 for (var i=0, l=this.changelogEntries.length; i<l; i++) {
                     const entry = this.changelogEntries[i];
 
-                    output += ' - ' + entry.text + '  ';
+                    output += ` - ${entry.text}  `;
 
                     if (entry.hashes.length > 0) {
                         for (var y=0, m=entry.hashes.length; y<m; y++) {
@@ -70,9 +76,27 @@ $(function() {
                     output += '\n';
                 }
 
-                output += '\n[Complete changelog](' + this.completeChangelogLink + ')';
+                output += [
+                    '',
+                    `[Complete changelog](${this.completeChangelogLink})`,
+                    '',
+                    '## Stats',
+                    '```diff',
+                    `${this.commitsCount} commits`,
+                    `${this.filesChanged} files changed`,
+                    `${this.additions} additions`,
+                    `${this.deletions} deletions`,
+                    '```',
+                    '',
+                    '*Contributors*:',
+                    ''
+                ].join('\n');
 
-                output += '\n\n## Stats\n```diff\n' + this.commitsCount + ' commits\n' + this.filesChanged + ' files changed\n+' + this.additions + ' additions\n-' + this.deletions + ' deletions\n```';
+                for (var z=0, l2=Object.keys(this.contributors).length; z<l2; z++) {
+                    const contributorName = Object.keys(this.contributors)[z],
+                        commitsCount = this.contributors[contributorName].commitsCount;
+                    output += ` - ${contributorName} - ${commitsCount} commit${commitsCount != 1 ? 's' : ''}\n`;
+                }
 
                 return output;
             }
@@ -88,16 +112,36 @@ $(function() {
         vue.additions = github.find('#diffstat').find('.text-green').text().trim().substr(1);
         vue.deletions = github.find('#diffstat').find('.text-red').text().trim().substr(1);
 
+        // Commits
         github.find('.commit').each(function() {
             const commit = $(this),
                 text = commit.find('.commit-message').text().trim();
 
+            // Don't include merge commits
+            if (text.indexOf('Merge pull request') === 0) {
+                return;
+            }
+
             vue.commits.push({
                 text: text,
                 hash: commit.find('.commit-id').text().trim(),
-                added: false,
-                isMerge: text.indexOf('Merge pull request') === 0
+                added: false
             });
+        });
+
+        // Contributors
+        github.find('.commit').each(function() {
+            const commit = $(this),
+                contributor = commit.find('.avatar').attr('alt');
+
+            if (Object.keys(vue.contributors).indexOf(contributor) === -1) {
+                vue.contributors[contributor] = {
+                    name: contributor,
+                    commitsCount: 0
+                };
+            }
+
+            vue.contributors[contributor].commitsCount++;
         });
     };
 

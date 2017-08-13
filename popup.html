@@ -10,14 +10,13 @@
 <div id="app">
     <h3>Commits</h3>
     <label v-for="commit in commits"
-           v-bind:class="{commit: true, 'commit--merge': commit.isMerge, crossed: commit.added}">
+           v-bind:class="{commit: true, crossed: commit.added}">
         <input type="checkbox" v-on:click="toggleCheckCommit(commit)" />
         <span v-text="commit.text"></span>
         <code v-text="commit.hash"></code>
     </label>
 
-    <h3>New entry</h3>
-    <input type="text" placeholder="Text" v-model="newEntry.text" />
+    <input type="text" placeholder="Text" v-model="newEntry.text" v-on:keyup.enter="addEntry" />
     <button v-on:click="addEntry" v-bind:disabled="newEntry.text.length == 0">+</button>
 
 
