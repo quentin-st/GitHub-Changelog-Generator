@@ -128,7 +128,10 @@ $(function() {
         // Commits
         github.find('.commit').each(function() {
             const commit = $(this),
-                text = commit.find('.commit-message').text().trim();
+                text = commit.find('.commit-message').text().trim(),
+                hash = commit.find('.commit-id').text().trim(),
+                userAvatar = commit.find('.avatar').attr('src'),
+                userName = commit.find('.avatar').attr('alt');
 
             // Don't include merge commits
             if (text.indexOf('Merge pull request') === 0 || text.indexOf('Merge branch') === 0) {
@@ -137,8 +140,10 @@ $(function() {
 
             vue.commits.push({
                 text: text,
-                hash: commit.find('.commit-id').text().trim(),
-                added: false
+                hash: hash,
+                added: false,
+                userAvatar: userAvatar,
+                userName: userName
             });
         });
 

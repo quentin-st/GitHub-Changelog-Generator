@@ -12,6 +12,7 @@
     <label v-for="commit in commits"
            v-bind:class="{commit: true, crossed: commit.added}">
         <input type="checkbox" v-on:click="toggleCheckCommit(commit)" />
+        <img v-bind:src="commit.userAvatar" width="16" height="16" alt="commit.userName" />
         <span v-text="commit.text"></span>
         <code v-text="commit.hash"></code>
     </label>
