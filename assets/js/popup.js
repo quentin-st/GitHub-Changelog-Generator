@@ -131,7 +131,7 @@ $(function() {
                 text = commit.find('.commit-message').text().trim();
 
             // Don't include merge commits
-            if (text.indexOf('Merge pull request') === 0) {
+            if (text.indexOf('Merge pull request') === 0 || text.indexOf('Merge branch') === 0) {
                 return;
             }
 
