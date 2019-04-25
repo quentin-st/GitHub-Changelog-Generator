@@ -113,9 +113,8 @@ $(function() {
     const onSourceLoaded = function(source, url) {
         const github = $(source);
 
-        console.log(github);
         window.github = github;
-        if (github.find('.header-logo-invertocat').length === 0) {
+        if (github.find('.octicon').length === 0) {
             $('#app').html('<div class="text-muted huge">You\'re not on GitHub!</div>');
         }
 
@@ -130,8 +129,8 @@ $(function() {
             const commit = $(this),
                 text = commit.find('.commit-message').text().trim(),
                 hash = commit.find('.commit-id').text().trim(),
-                userAvatar = commit.find('.avatar').attr('src'),
-                userName = commit.find('.avatar').attr('alt');
+                userAvatar = commit.find('.avatar').find('img').attr('src'),
+                userName = commit.find('.avatar').find('img').attr('alt');
 
             // Don't include merge commits
             if (text.indexOf('Merge pull request') === 0 || text.indexOf('Merge branch') === 0) {
