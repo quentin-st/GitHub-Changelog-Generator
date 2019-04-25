@@ -149,7 +149,7 @@ $(function() {
         // Contributors
         github.find('.commit').each(function() {
             const commit = $(this),
-                contributor = commit.find('.avatar').attr('alt');
+                contributor = commit.find('.avatar').find('img').attr('alt');
 
             if (Object.keys(vue.contributors).indexOf(contributor) === -1) {
                 vue.contributors[contributor] = {
