@@ -26,8 +26,13 @@ $(function() {
         },
         methods: {
             toggleCheckCommit: function(commit) {
+                // Add/remove commit from commits list
                 if (this.newEntry.commits.indexOf(commit) === -1) {
                     this.newEntry.commits.push(commit);
+
+                    if (!this.newEntry.text.length) {
+                        this.newEntry.text = commit.text;
+                    }
                 }
                 else {
                     this.newEntry.commits.splice(this.newEntry.commits.indexOf(commit), 1);
