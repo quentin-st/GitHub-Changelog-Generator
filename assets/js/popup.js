@@ -121,6 +121,7 @@ $(function() {
         window.github = github;
         if (github.find('.octicon').length === 0) {
             $('#app').html('<div class="text-muted huge">You\'re not on GitHub!</div>');
+            return;
         }
 
         vue.completeChangelogLink = url;
@@ -130,10 +131,10 @@ $(function() {
         vue.deletions = github.find('#diffstat').find('.text-red').text().trim().substr(1);
 
         // Commits
-        github.find('.commit').each(function() {
+        github.find('.js-commit').each(function() {
             const commit = $(this),
                 text = commit.find('.commit-message').text().trim(),
-                hash = commit.find('.commit-id').text().trim(),
+                hash = commit.find('.text-right').find('a[href*="/commits/"]').text().trim(),
                 userAvatar = commit.find('.avatar').find('img').attr('src'),
                 userName = commit.find('.avatar').find('img').attr('alt');
 
