@@ -133,10 +133,12 @@ $(function() {
         // Commits
         github.find('.js-commit').each(function() {
             const commit = $(this),
-                text = commit.find('.commit-message').text().trim(),
-                hash = commit.find('.text-right').find('a[href*="/commits/"]').text().trim(),
                 userAvatar = commit.find('.avatar').find('img').attr('src'),
                 userName = commit.find('.avatar').find('img').attr('alt');
+
+            const [textEl, hashEl] = commit.find('a[href*="/commits/"]');
+            const text = $(textEl).text().trim(),
+                hash = $(hashEl).text().trim();
 
             // Don't include merge commits
             if (text.indexOf('Merge pull request') === 0 || text.indexOf('Merge branch') === 0) {
@@ -153,7 +155,7 @@ $(function() {
         });
 
         // Contributors
-        github.find('.commit').each(function() {
+        github.find('.js-commit').each(function() {
             const commit = $(this),
                 contributor = commit.find('.avatar').find('img').attr('alt');
 
